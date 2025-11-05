@@ -15,7 +15,7 @@
     </header>
     <main>
         <h2>Analisar Sequência de DNA</h2>
-        <form action="{{ url_for('result') }}" method="post">
+        <form action="{{ url_for('analyze') }}" method="post">
             <label for="sequence">Sequência:</label><br>
             {% if sample %}
                 <textarea name="sequence" rows="6" cols="60">{{ sample.sequence }}</textarea>
@@ -23,11 +23,23 @@
                 <textarea name="sequence" rows="6" cols="60"></textarea>
             {% endif %}
             <br><br>
+
             <label for="sequence2">Segunda sequência (opcional, para comparação):</label><br>
             <textarea name="sequence2" rows="6" cols="60"></textarea>
             <br><br>
+            <label for="organism">Organismo de referência (Codon Bias):</label><br>
+            <select name="organism">
+                <option value="Escherichia coli K12">Escherichia coli K12</option>
+                <option value="Homo sapiens">Homo sapiens</option>
+                <option value="Saccharomyces cerevisiae">Saccharomyces cerevisiae</option>
+                <option value="Mus musculus">Mus musculus</option>
+                <option value="Arabidopsis thaliana">Arabidopsis thaliana</option>
+            </select>
+            <br><br>
+
             <input type="submit" value="Analisar">
         </form>
+
         <section class="examples">
             <h3>Exemplos disponíveis</h3>
             <ul>

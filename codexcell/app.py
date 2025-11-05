@@ -6,7 +6,9 @@ from Bio.Seq import Seq
 from Bio.SeqUtils import gc_fraction
 from collections import Counter
 import re
+import requests
 import json
+from bs4 import BeautifulSoup
 
 app = Flask(__name__)
 
@@ -14,9 +16,27 @@ app = Flask(__name__)
 def home():
     return render_template('index.html')
 
-@app.route('/analyze')
+@app.route('/analyze', methods=['GET', 'POST'])
 def analyze():
+    if request.method == 'POST':
+        sequence = request.form['sequence'].upper()
+        organism = request.form['organism']
+        reference_usage = fetch_codon_usage_kazusa(organism)
+
+        if reference_usage:
+            bias = codon_bias(sequence, reference_usage)
+        else:
+            bias = []
+
+        return render_template(
+            'result.html',
+            sequence=sequence,
+            organism=organism,
+            bias=bias
+        )
     return render_template('analyze.html')
+
+
 
 @app.route("/load_sample/<sample_id>")
 def load_sample(sample_id):
@@ -82,6 +102,21 @@ def plot_png():
 @app.route('/error')
 def error():
     return render_template('error.html')
+
+@app.route('/analyze', methods=['POST'])
+def analyze():
+    sequence = request.form['sequence'].upper()
+    reference_usage = fetch_codon_usage("Escherichia coli K12")
+    if reference_usage:
+        bias = codon_bias(sequence, reference_usage)
+    else:
+        bias = []
+    return render_template(
+        'result.html',
+        sequence=sequence,
+        bias=bias
+    )
+
 
 def find_orfs(sequence):
     stop_codons = ["TAA", "TAG", "TGA"]
@@ -167,7 +202,6 @@ def codon_usage(sequence):
         if len(codon) == 3:
             codons.append(codon)
     counts = Counter(codons)
-    # Retorna os 10 mais comuns
     return counts.most_common(10)
 
 aa_weights = {
@@ -200,6 +234,47 @@ def find_motifs(sequence):
                 "sequence": match.group()
             })
     return motifs
+
+def fetch_codon_usage_kazusa(organism="Escherichia coli K12"):
+    url = f"http://www.kazusa.or.jp/codon/cgi-bin/showcodon.cgi?species={organism.replace(' ', '+')}&aa=1&style=N"
+    resp = requests.get(url, timeout=10)
+    if resp.status_code != 200:
+        return None
+    
+    soup = BeautifulSoup(resp.text, "html.parser")
+    pre = soup.find("pre")
+    if not pre:
+        return None
+    
+    lines = pre.get_text().splitlines()
+    usage = {}
+    for line in lines[1:]:
+        parts = line.split()
+        if len(parts) >= 3:
+            codon = parts[0]
+            try:
+                freq = float(parts[2])
+                usage[codon] = freq
+            except ValueError:
+                continue
+    return usage
+
+def codon_bias(sequence, reference_usage):
+    codons = [sequence[i:i+3] for i in range(0, len(sequence)-2, 3)]
+    counts = Counter(codons)
+    total = sum(counts.values())
+    bias = []
+    for codon, count in counts.items():
+        freq_seq = count / total
+        freq_ref = reference_usage.get(codon, 0.0001)
+        bias.append({
+            "codon": codon,
+            "freq_seq": round(freq_seq, 3),
+            "freq_ref": round(freq_ref, 3),
+            "ratio": round(freq_seq / freq_ref, 2) if freq_ref > 0 else None
+        })
+    return sorted(bias, key=lambda x: x["codon"])
+
 
 
 

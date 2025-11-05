@@ -211,6 +211,30 @@
         <script src="{{ url_for('static', filename='js/orf.js') }}"></script>
 
 
+        <div class="codon-bias">
+        <h3>Codon Bias (comparação com organismo de referência)</h3>
+        {% if bias and bias|length > 0 %}
+            <table border="1" cellpadding="5">
+            <tr>
+                <th>Códon</th>
+                <th>Freq. na sequência</th>
+                <th>Freq. no organismo</th>
+                <th>Razão (seq/ref)</th>
+            </tr>
+            {% for b in bias %}
+            <tr>
+                <td>{{ b.codon }}</td>
+                <td>{{ b.freq_seq }}</td>
+                <td>{{ b.freq_ref }}</td>
+                <td>{{ b.ratio }}</td>
+            </tr>
+            {% endfor %}
+            </table>
+        {% else %}
+            <p>Não foi possível calcular o Codon Bias (API indisponível).</p>
+        {% endif %}
+        </div>
+
 
 
 
