@@ -1,0 +1,19 @@
+{
+  "genes": [
+    {
+      "id": "insulina",
+      "name": "Gene da Insulina Humana",
+      "sequence": "ATGCCCTCTTG"
+    },
+    {
+      "id": "hemoglobina",
+      "name": "Gene da Hemoglobina",
+      "sequence": "ATGGTGCACCT"
+    },
+    {
+      "id": "teste_curto",
+      "name": "Sequência de Teste Curta",
+      "sequence": "ATGCGTACGTAGCTAGCTAGCTA"
+    }
+  ]
+}
