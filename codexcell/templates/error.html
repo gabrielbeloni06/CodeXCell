@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>CodeXCell - Erro</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/error.css') }}">
+</head>
+<body>
+    <header>
+        <h1>CodeXCell</h1>
+        <nav>
+            <a href="{{ url_for('home') }}">Home</a> |
+            <a href="{{ url_for('analyze') }}">Analisar</a>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Erro</h2>
+        <p>Sequência inválida. Use apenas caracteres A, T, C, G.</p>
+        <a href="{{ url_for('analyze') }}">Voltar</a>
+    </main>
+
+    <footer>
+        <p>Projeto CodeXCell © 2025</p>
+    </footer>
+</body>
+</html>

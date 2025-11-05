@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>CodeXCell - Resultados</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/result.css') }}">
+</head>
+<body>
+    <header>
+        <h1>CodeXCell</h1>
+        <nav>
+            <a href="{{ url_for('home') }}">Home</a> |
+            <a href="{{ url_for('analyze') }}">Analisar</a>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Resultados da Análise</h2>
+
+        <p><strong>Sequência:</strong> {{ sequence }}</p>
+
+        <h3>Contagem de Bases</h3>
+        <ul>
+            <li>A: {{ counts.A }}</li>
+            <li>T: {{ counts.T }}</li>
+            <li>C: {{ counts.C }}</li>
+            <li>G: {{ counts.G }}</li>
+        </ul>
+
+        <p><strong>GC Content:</strong> {{ gc_content }}%</p>
+
+        {% if start_codon %}
+        <p><strong>Start codon encontrado na posição:</strong> {{ start_codon }}</p>
+        {% else %}
+        <p><strong>Nenhum start codon encontrado.</strong></p>
+        {% endif %}
+
+        <div class="chart">
+            <p>[Gráfico de barras será exibido aqui]</p>
+        </div>
+
+        <div class="explanation">
+            <h3>Explicação</h3>
+            <p>[Texto gerado pelo LLM será exibido aqui]</p>
+        </div>
+    </main>
+
+    <footer>
+        <p>Projeto CodeXCell © 2025</p>
+    </footer>
+</body>
+</html>
