@@ -66,6 +66,31 @@
             {% endif %}
         </div>
 
+        <div class="repeats">
+            <h3>Motivos Repetitivos Detectados</h3>
+            {% if repeats and repeats|length > 0 %}
+                <table border="1" cellpadding="5">
+                    <tr>
+                        <th>Motivo</th>
+                        <th>Início</th>
+                        <th>Fim</th>
+                        <th>Número de repetições</th>
+                    </tr>
+                    {% for rep in repeats %}
+                    <tr>
+                        <td>{{ rep.motif }}</td>
+                        <td>{{ rep.start }}</td>
+                        <td>{{ rep.end }}</td>
+                        <td>{{ rep.repeats }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <p>Nenhum motivo repetitivo encontrado.</p>
+            {% endif %}
+        </div>
+
+
         <div class="explanation">
             <h3>Explicação</h3>
             <p>[Texto gerado pelo LLM será exibido aqui]</p>

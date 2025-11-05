@@ -27,6 +27,7 @@ def result():
     gc_content = round(gc_fraction(seq) * 100, 2)
     start_codon = seq.find("ATG")
     orfs = find_orfs(sequence)
+    repeats = find_repeats(sequence)
 
     return render_template(
         'result.html',
@@ -34,8 +35,10 @@ def result():
         counts=counts,
         gc_content=gc_content,
         start_codon=start_codon if start_codon != -1 else None,
-        orfs=orfs
+        orfs=orfs,
+        repeats=repeats
     )
+
 
 
 @app.route('/plot.png')
@@ -79,6 +82,28 @@ def find_orfs(sequence):
                         break
             i += 3
     return orfs
+
+def find_repeats(sequence, min_motif=2, max_motif=6, min_repeats=3):
+    repeats = []
+    seq_len = len(sequence)
+
+    for motif_len in range(min_motif, max_motif+1):
+        for i in range(seq_len - motif_len*min_repeats + 1):
+            motif = sequence[i:i+motif_len]
+            count = 1
+            j = i + motif_len
+            while j + motif_len <= seq_len and sequence[j:j+motif_len] == motif:
+                count += 1
+                j += motif_len
+            if count >= min_repeats:
+                repeats.append({
+                    "motif": motif,
+                    "start": i,
+                    "end": j,
+                    "repeats": count
+                })
+    return repeats
+
 
 
 if __name__ == '__main__':
