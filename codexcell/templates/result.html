@@ -36,8 +36,10 @@
         {% endif %}
 
         <div class="chart">
-            <p>[Gráfico de barras será exibido aqui]</p>
+            <h3>Gráfico de Frequência</h3>
+            <img src="{{ url_for('plot_png', seq=sequence) }}" alt="Gráfico de nucleotídeos">
         </div>
+
 
         <div class="explanation">
             <h3>Explicação</h3>
