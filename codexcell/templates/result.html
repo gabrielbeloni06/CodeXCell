@@ -104,6 +104,29 @@
             {% endif %}
         </div>
 
+        <div class="gc-windows">
+            <h3>GC Content por janela</h3>
+            {% if gc_windows and gc_windows|length > 0 %}
+                <table border="1" cellpadding="5">
+                    <tr>
+                        <th>Início</th>
+                        <th>Fim</th>
+                        <th>GC (%)</th>
+                    </tr>
+                    {% for w in gc_windows %}
+                    <tr>
+                        <td>{{ w.start }}</td>
+                        <td>{{ w.end }}</td>
+                        <td>{{ w.gc }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <p>Sequência muito curta para análise em janelas.</p>
+            {% endif %}
+        </div>
+
+
 
 
         <div class="explanation">

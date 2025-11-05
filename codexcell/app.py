@@ -30,6 +30,8 @@ def result():
     repeats = find_repeats(sequence)
     sequence1 = request.form.get("sequence", "").upper().strip()
     sequence2 = request.form.get("sequence2", "").upper().strip()
+    gc_windows = gc_content_sliding_window(sequence, window_size=10)
+    
 
     comparison = None
     if sequence2:
@@ -37,14 +39,16 @@ def result():
 
     return render_template(
         'result.html',
-        sequence=sequence1,
+        sequence=sequence,
         counts=counts,
         gc_content=gc_content,
         start_codon=start_codon if start_codon != -1 else None,
         orfs=orfs,
         repeats=repeats,
-        comparison=comparison
+        comparison=comparison,
+        gc_windows=gc_windows
     )
+
 
 
 
@@ -129,6 +133,15 @@ def compare_sequences(seq1, seq2):
         "alignment": "".join(alignment),
         "identity": identity
     }
+
+def gc_content_sliding_window(sequence, window_size=50):
+    values = []
+    for i in range(0, len(sequence) - window_size + 1, window_size):
+        window = sequence[i:i+window_size]
+        gc = (window.count("G") + window.count("C")) / len(window) * 100
+        values.append({"start": i, "end": i+window_size, "gc": round(gc, 2)})
+    return values
+
 
 
 
