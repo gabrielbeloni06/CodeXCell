@@ -90,6 +90,21 @@
             {% endif %}
         </div>
 
+        <div class="comparison">
+            <h3>Comparação de Sequências</h3>
+            {% if comparison %}
+                <pre>
+        Seq1: {{ comparison.seq1 }}
+            {{ comparison.alignment }}
+        Seq2: {{ comparison.seq2 }}
+                </pre>
+                <p><strong>Identidade:</strong> {{ comparison.identity }}%</p>
+            {% else %}
+                <p>Nenhuma segunda sequência fornecida.</p>
+            {% endif %}
+        </div>
+
+
 
         <div class="explanation">
             <h3>Explicação</h3>

@@ -28,16 +28,24 @@ def result():
     start_codon = seq.find("ATG")
     orfs = find_orfs(sequence)
     repeats = find_repeats(sequence)
+    sequence1 = request.form.get("sequence", "").upper().strip()
+    sequence2 = request.form.get("sequence2", "").upper().strip()
+
+    comparison = None
+    if sequence2:
+        comparison = compare_sequences(sequence1, sequence2)
 
     return render_template(
         'result.html',
-        sequence=sequence,
+        sequence=sequence1,
         counts=counts,
         gc_content=gc_content,
         start_codon=start_codon if start_codon != -1 else None,
         orfs=orfs,
-        repeats=repeats
+        repeats=repeats,
+        comparison=comparison
     )
+
 
 
 
@@ -103,6 +111,25 @@ def find_repeats(sequence, min_motif=2, max_motif=6, min_repeats=3):
                     "repeats": count
                 })
     return repeats
+
+def compare_sequences(seq1, seq2):
+    length = min(len(seq1), len(seq2))
+    matches = 0
+    alignment = []
+    for i in range(length):
+        if seq1[i] == seq2[i]:
+            alignment.append("|")
+            matches += 1
+        else:
+            alignment.append(" ")
+    identity = round((matches / length) * 100, 2) if length > 0 else 0
+    return {
+        "seq1": seq1[:length],
+        "seq2": seq2[:length],
+        "alignment": "".join(alignment),
+        "identity": identity
+    }
+
 
 
 

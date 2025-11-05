@@ -17,9 +17,15 @@
     <main>
         <h2>Insira sua sequência genética</h2>
         <form action="{{ url_for('result') }}" method="post">
-            <textarea name="sequence" rows="6" cols="60" placeholder="Cole sua sequência aqui..."></textarea><br>
-            <button type="submit">Analisar</button>
+            <label for="sequence">Sequência 1:</label><br>
+            <textarea name="sequence" rows="4" cols="50"></textarea><br><br>
+
+            <label for="sequence2">Sequência 2 (opcional):</label><br>
+            <textarea name="sequence2" rows="4" cols="50"></textarea><br><br>
+
+            <input type="submit" value="Analisar">
         </form>
+
     </main>
 
     <footer>
