@@ -5,6 +5,7 @@ from flask import Flask, render_template, request, redirect, url_for, Response
 from Bio.Seq import Seq
 from Bio.SeqUtils import gc_fraction
 from collections import Counter
+import json
 
 app = Flask(__name__)
 
