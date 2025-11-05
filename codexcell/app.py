@@ -5,6 +5,7 @@ from flask import Flask, render_template, request, redirect, url_for, Response
 from Bio.Seq import Seq
 from Bio.SeqUtils import gc_fraction
 from collections import Counter
+import re
 import json
 
 app = Flask(__name__)
@@ -46,6 +47,7 @@ def result():
     if sequence2:
         comparison = compare_sequences(sequence1, sequence2)
     codons = codon_usage(sequence)
+    motifs = find_motifs(sequence)
 
     return render_template(
         'result.html',
@@ -57,12 +59,9 @@ def result():
         repeats=repeats,
         comparison=comparison,
         gc_windows=gc_windows,
-        codons=codons
+        codons=codons,
+        motifs=motifs
     )
-
-
-
-
 
 
 @app.route('/plot.png')
@@ -185,7 +184,22 @@ def analyze_protein(protein_seq):
     weight = round(sum(aa_weights.get(aa, 0) for aa in protein_seq), 2)
     return {"length": total, "freq": freq, "weight": weight}
 
-
+def find_motifs(sequence):
+    motifs = []
+    patterns = {
+        "TATA box": "TATAAA",
+        "CAAT box": "GGCCAATCT",
+        "Kozak sequence": r"GCC[AG]CCATGG"
+    }
+    for name, pattern in patterns.items():
+        for match in re.finditer(pattern, sequence):
+            motifs.append({
+                "motif": name,
+                "start": match.start(),
+                "end": match.end(),
+                "sequence": match.group()
+            })
+    return motifs
 
 
 

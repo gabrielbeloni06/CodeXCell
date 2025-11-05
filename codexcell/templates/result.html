@@ -158,6 +158,29 @@
                 </ul>
             {% endfor %}
         </div>
+        <div class="motifs">
+            <h3>Motivos Biológicos Detectados</h3>
+            {% if motifs and motifs|length > 0 %}
+                <table border="1" cellpadding="5">
+                    <tr>
+                        <th>Motivo</th>
+                        <th>Sequência</th>
+                        <th>Início</th>
+                        <th>Fim</th>
+                    </tr>
+                    {% for m in motifs %}
+                    <tr>
+                        <td>{{ m.motif }}</td>
+                        <td>{{ m.sequence }}</td>
+                        <td>{{ m.start }}</td>
+                        <td>{{ m.end }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <p>Nenhum motivo clássico encontrado.</p>
+            {% endif %}
+        </div>
 
 
 
