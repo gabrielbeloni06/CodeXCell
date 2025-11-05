@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from flask import Flask, render_template, request, redirect, url_for, Response
 from Bio.Seq import Seq
 from Bio.SeqUtils import gc_fraction
+from collections import Counter
 
 app = Flask(__name__)
 
@@ -31,11 +32,10 @@ def result():
     sequence1 = request.form.get("sequence", "").upper().strip()
     sequence2 = request.form.get("sequence2", "").upper().strip()
     gc_windows = gc_content_sliding_window(sequence, window_size=10)
-    
-
     comparison = None
     if sequence2:
         comparison = compare_sequences(sequence1, sequence2)
+    codons = codon_usage(sequence)
 
     return render_template(
         'result.html',
@@ -46,8 +46,10 @@ def result():
         orfs=orfs,
         repeats=repeats,
         comparison=comparison,
-        gc_windows=gc_windows
+        gc_windows=gc_windows,
+        codons=codons
     )
+
 
 
 
@@ -141,6 +143,19 @@ def gc_content_sliding_window(sequence, window_size=50):
         gc = (window.count("G") + window.count("C")) / len(window) * 100
         values.append({"start": i, "end": i+window_size, "gc": round(gc, 2)})
     return values
+
+from collections import Counter
+
+def codon_usage(sequence):
+    codons = []
+    for i in range(0, len(sequence) - 2, 3):
+        codon = sequence[i:i+3]
+        if len(codon) == 3:
+            codons.append(codon)
+    counts = Counter(codons)
+    # Retorna os 10 mais comuns
+    return counts.most_common(10)
+
 
 
 

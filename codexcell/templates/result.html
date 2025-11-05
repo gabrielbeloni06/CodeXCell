@@ -125,6 +125,25 @@
                 <p>Sequência muito curta para análise em janelas.</p>
             {% endif %}
         </div>
+        <div class="codons">
+            <h3>Frequência de Códons (Top 10)</h3>
+            {% if codons and codons|length > 0 %}
+                <table border="1" cellpadding="5">
+                    <tr>
+                        <th>Códon</th>
+                        <th>Contagem</th>
+                    </tr>
+                    {% for codon, count in codons %}
+                    <tr>
+                        <td>{{ codon }}</td>
+                        <td>{{ count }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <p>Nenhum códon encontrado.</p>
+            {% endif %}
+        </div>
 
 
 
