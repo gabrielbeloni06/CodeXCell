@@ -199,9 +199,20 @@
         </div>
 
         <div class="orf-visual">
-            <h3>Visualização gráfica dos ORFs</h3>
-            <p>[Em breve: gráfico mostrando os ORFs ao longo da sequência]</p>
+        <h3>Visualização gráfica dos ORFs (Canvas)</h3>
+        <canvas id="orfCanvas" width="800" height="80" style="border:1px solid #ccc;"></canvas>
+        <p style="font-size: 0.9em; color: #555;">
+            Cada cor representa um frame diferente (1 = verde, 2 = azul, 3 = laranja).
+        </p>
         </div>
+        <div id="orfData"
+            data-orfs='{{ orfs|tojson|safe }}'
+            data-length='{{ sequence|length }}'></div>
+        <script src="{{ url_for('static', filename='js/orf.js') }}"></script>
+
+
+
+
 
 
         <div class="explanation">

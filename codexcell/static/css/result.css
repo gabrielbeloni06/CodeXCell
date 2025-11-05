@@ -1,0 +1,9 @@
+.orf-bar {
+  position: absolute;
+  height: 100%;
+  opacity: 0.8;
+}
+
+.frame-1 { background-color: #4CAF50; }
+.frame-2 { background-color: #2196F3; }
+.frame-3 { background-color: #FF9800; }
