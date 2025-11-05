@@ -96,11 +96,16 @@ def find_orfs(sequence):
                 for j in range(i+3, seq_len-2, 3):
                     stop = sequence[j:j+3]
                     if stop in stop_codons:
+                        subseq = sequence[i:j+3]
+                        protein = str(Seq(subseq).translate(to_stop=True))
+                        analysis = analyze_protein(protein)
                         orfs.append({
                             "start": i,
                             "end": j+3,
                             "length": (j+3 - i),
-                            "frame": frame+1
+                            "frame": frame+1,
+                            "protein": protein,
+                            "analysis": analysis
                         })
                         i = j+3
                         break
@@ -165,6 +170,20 @@ def codon_usage(sequence):
     counts = Counter(codons)
     # Retorna os 10 mais comuns
     return counts.most_common(10)
+
+aa_weights = {
+    "A": 89.1, "R": 174.2, "N": 132.1, "D": 133.1, "C": 121.2,
+    "E": 147.1, "Q": 146.2, "G": 75.1, "H": 155.2, "I": 131.2,
+    "L": 131.2, "K": 146.2, "M": 149.2, "F": 165.2, "P": 115.1,
+    "S": 105.1, "T": 119.1, "W": 204.2, "Y": 181.2, "V": 117.1
+}
+
+def analyze_protein(protein_seq):
+    counts = Counter(protein_seq)
+    total = sum(counts.values())
+    freq = {aa: round((counts[aa]/total)*100, 2) for aa in counts}
+    weight = round(sum(aa_weights.get(aa, 0) for aa in protein_seq), 2)
+    return {"length": total, "freq": freq, "weight": weight}
 
 
 

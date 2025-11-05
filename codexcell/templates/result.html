@@ -145,6 +145,21 @@
             {% endif %}
         </div>
 
+        <div class="aminoacids">
+            <h3>Análise de Aminoácidos</h3>
+            {% for orf in orfs %}
+                <p><strong>Proteína do ORF (frame {{ orf.frame }}):</strong> {{ orf.protein }}</p>
+                <p>Tamanho: {{ orf.analysis.length }} aa | Peso molecular: {{ orf.analysis.weight }} Da</p>
+                <p>Frequência relativa:</p>
+                <ul>
+                    {% for aa, perc in orf.analysis.freq.items() %}
+                        <li>{{ aa }}: {{ perc }}%</li>
+                    {% endfor %}
+                </ul>
+            {% endfor %}
+        </div>
+
+
 
 
 
