@@ -35,6 +35,31 @@
         <p><strong>Nenhum start codon encontrado.</strong></p>
         {% endif %}
 
+        <div class="orfs">
+            <h3>ORFs Detectados</h3>
+            {% if orfs and orfs|length > 0 %}
+                <table border="1" cellpadding="5">
+                    <tr>
+                        <th>Frame</th>
+                        <th>Início</th>
+                        <th>Fim</th>
+                        <th>Tamanho (nt)</th>
+                    </tr>
+                    {% for orf in orfs %}
+                    <tr>
+                        <td>{{ orf.frame }}</td>
+                        <td>{{ orf.start }}</td>
+                        <td>{{ orf.end }}</td>
+                        <td>{{ orf.length }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <p>Nenhum ORF encontrado.</p>
+            {% endif %}
+        </div>
+
+
         <div class="chart">
             <h3>Gráfico de Frequência</h3>
             <img src="{{ url_for('plot_png', seq=sequence) }}" alt="Gráfico de nucleotídeos">

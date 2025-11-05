@@ -26,14 +26,17 @@ def result():
     counts = {base: seq.count(base) for base in "ATCG"}
     gc_content = round(gc_fraction(seq) * 100, 2)
     start_codon = seq.find("ATG")
+    orfs = find_orfs(sequence)
 
     return render_template(
         'result.html',
         sequence=sequence,
         counts=counts,
         gc_content=gc_content,
-        start_codon=start_codon if start_codon != -1 else None
+        start_codon=start_codon if start_codon != -1 else None,
+        orfs=orfs
     )
+
 
 @app.route('/plot.png')
 def plot_png():
@@ -53,6 +56,30 @@ def plot_png():
 @app.route('/error')
 def error():
     return render_template('error.html')
+
+def find_orfs(sequence):
+    stop_codons = ["TAA", "TAG", "TGA"]
+    orfs = []
+    seq_len = len(sequence)
+    for frame in range(3):
+        i = frame
+        while i < seq_len - 2:
+            codon = sequence[i:i+3]
+            if codon == "ATG":
+                for j in range(i+3, seq_len-2, 3):
+                    stop = sequence[j:j+3]
+                    if stop in stop_codons:
+                        orfs.append({
+                            "start": i,
+                            "end": j+3,
+                            "length": (j+3 - i),
+                            "frame": frame+1
+                        })
+                        i = j+3
+                        break
+            i += 3
+    return orfs
+
 
 if __name__ == '__main__':
     app.run(debug=True)
