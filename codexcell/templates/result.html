@@ -182,6 +182,28 @@
             {% endif %}
         </div>
 
+        <div class="gc-heatmap">
+            <h3>Heatmap de GC Content</h3>
+            {% if gc_windows and gc_windows|length > 0 %}
+                <div style="display:flex;">
+                    {% for w in gc_windows %}
+                        {% set color = 'rgb(' ~ (255 - (w.gc*2.55)|int) ~ ',' ~ (255 - (w.gc*1.5)|int) ~ ',' ~ (w.gc*2.55)|int ~ ')' %}
+                        <div title="Pos {{ w.start }}-{{ w.end }}: {{ w.gc }}%" 
+                            style="width:20px; height:20px; background-color:{{ color }}; margin:1px;">
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>Sequência muito curta para heatmap.</p>
+            {% endif %}
+        </div>
+
+        <div class="orf-visual">
+            <h3>Visualização gráfica dos ORFs</h3>
+            <p>[Em breve: gráfico mostrando os ORFs ao longo da sequência]</p>
+        </div>
+
+
 
 
 
