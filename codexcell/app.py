@@ -16,13 +16,17 @@ app = Flask(__name__)
 def home():
     return render_template('index.html')
 
+from collections import Counter
+
 @app.route('/analyze', methods=['GET', 'POST'])
 def analyze():
     if request.method == 'POST':
         sequence = request.form['sequence'].upper()
         organism = request.form['organism']
-        reference_usage = fetch_codon_usage_kazusa(organism)
 
+        counts = Counter(sequence)
+
+        reference_usage = fetch_codon_usage_kazusa(organism)
         if reference_usage:
             bias = codon_bias(sequence, reference_usage)
         else:
@@ -32,9 +36,12 @@ def analyze():
             'result.html',
             sequence=sequence,
             organism=organism,
-            bias=bias
+            bias=bias,
+            counts=counts
         )
+
     return render_template('analyze.html')
+
 
 
 
@@ -68,6 +75,15 @@ def result():
         comparison = compare_sequences(sequence1, sequence2)
     codons = codon_usage(sequence)
     motifs = find_motifs(sequence)
+    orfs = find_orfs(sequence) or []
+    repeats = find_repeats(sequence) or []
+    organism = request.form.get("organism", "Escherichia coli K12")
+    reference_usage = fetch_codon_usage_kazusa(organism)
+    if reference_usage:
+        bias = codon_bias(sequence, reference_usage)
+    else:
+        bias = []
+
 
     return render_template(
         'result.html',
@@ -80,7 +96,9 @@ def result():
         comparison=comparison,
         gc_windows=gc_windows,
         codons=codons,
-        motifs=motifs
+        motifs=motifs,
+        bias=bias,
+        organism=organism
     )
 
 
@@ -102,20 +120,6 @@ def plot_png():
 @app.route('/error')
 def error():
     return render_template('error.html')
-
-@app.route('/analyze', methods=['POST'])
-def analyze():
-    sequence = request.form['sequence'].upper()
-    reference_usage = fetch_codon_usage("Escherichia coli K12")
-    if reference_usage:
-        bias = codon_bias(sequence, reference_usage)
-    else:
-        bias = []
-    return render_template(
-        'result.html',
-        sequence=sequence,
-        bias=bias
-    )
 
 
 def find_orfs(sequence):
