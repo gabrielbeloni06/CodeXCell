@@ -17,6 +17,15 @@ def home():
 def analyze():
     return render_template('analyze.html')
 
+@app.route("/load_sample/<sample_id>")
+def load_sample(sample_id):
+    with open("data/samples.json") as f:
+        data = json.load(f)
+    for gene in data["genes"]:
+        if gene["id"] == sample_id:
+            return render_template("analyze.html", sample=gene)
+    return "Exemplo não encontrado", 404
+
 @app.route('/result', methods=['POST'])
 def result():
     sequence = request.form.get("sequence", "").upper().strip()
