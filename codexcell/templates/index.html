@@ -1,29 +1,55 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <title>CodeXCell - Home</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>CodeXCell — Genética avançada</title>
+  <link rel="stylesheet" href="../static/css/index.css" />
 </head>
 <body>
-    <header>
-        <h1>CodeXCell</h1>
-        <nav>
-            <a href="{{ url_for('home') }}">Home</a> |
-            <a href="{{ url_for('analyze') }}">Analisar</a>
-        </nav>
-    </header>
+  <canvas id="dnaCanvas"></canvas>
+  <div class="gradient-overlay"></div>
 
-    <main>
-        <section class="hero">
-            <h2>Visualizador Genético</h2>
-            <p>Explore sequências e descubra padrões biológicos.</p>
-            <a href="{{ url_for('analyze') }}" class="btn">Começar Análise</a>
-        </section>
-    </main>
+  <main class="hero" id="top">
+    <div class="hero-content">
+      <h1 class="project-name">CodeXCell</h1>
+      <p class="subtitle">Análise genética avançada</p>
+      <div class="cta-group">
+        <a class="btn btn-primary" href="/analyze">Começar análise</a>
+        <a class="btn btn-ghost" href="#features">Explorar recursos</a>
+      </div>
+    </div>
+  </main>
 
-    <footer>
-        <p>Projeto CodeXCell © 2025</p>
-    </footer>
+  <section class="features" id="features">
+    <div class="feature-cards">
+      <article class="card">
+        <div class="card-icon">🧬</div>
+        <h3>Detecção de ORFs</h3>
+        <p>Mapeamento de quadros de leitura com tradução e análise de proteínas.</p>
+      </article>
+      <article class="card">
+        <div class="card-icon">📊</div>
+        <h3>GC por janelas</h3>
+        <p>Perfil local de GC com visualização dinâmica e heatmap.</p>
+      </article>
+      <article class="card">
+        <div class="card-icon">🔎</div>
+        <h3>Motivos clássicos</h3>
+        <p>Varredura por assinaturas como TATA-box, CAAT-box e sequência de Kozak.</p>
+      </article>
+      <article class="card">
+        <div class="card-icon">⚡</div>
+        <h3>Codon Bias</h3>
+        <p>Comparação com organismos de referência e cálculo de viés relativo.</p>
+      </article>
+    </div>
+  </section>
+
+  <footer class="site-footer" id="contato">
+    <p>Projeto CodeXCell © 2025</p>
+  </footer>
+
+  <script src="../static/js/index.js"></script>
 </body>
 </html>
