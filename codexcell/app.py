@@ -37,8 +37,15 @@ def analyze():
             sequence=sequence,
             organism=organism,
             bias=bias,
-            counts=counts
+            counts=counts,
+            orfs=[],
+            repeats=[],
+            comparison=None,
+            gc_windows=[],
+            codons=[],
+            motifs=[]
         )
+
 
     return render_template('analyze.html')
 
