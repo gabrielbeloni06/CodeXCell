@@ -6,6 +6,9 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/analyze.css') }}">
 </head>
 <body>
+    <canvas id="dnaCanvas" aria-hidden="true"></canvas>
+    <div class="gradient-overlay" aria-hidden="true"></div>
+
     <header>
         <h1>CodeXCell</h1>
         <nav>
@@ -13,6 +16,7 @@
             <a href="{{ url_for('analyze') }}">Analisar</a>
         </nav>
     </header>
+
     <main>
         <h2>Analisar Sequência de DNA</h2>
         <form action="{{ url_for('analyze') }}" method="post">
@@ -27,6 +31,7 @@
             <label for="sequence2">Segunda sequência (opcional, para comparação):</label><br>
             <textarea name="sequence2" rows="6" cols="60"></textarea>
             <br><br>
+
             <label for="organism">Organismo de referência (Codon Bias):</label><br>
             <select name="organism">
                 <option value="Escherichia coli K12">Escherichia coli K12</option>
@@ -49,6 +54,8 @@
             </ul>
         </section>
     </main>
+    <script src="{{ url_for('static', filename='js/analyze.js') }}"></script>
+
     <footer>
         <p>Projeto CodeXCell © 2025</p>
     </footer>
