@@ -21,11 +21,12 @@ from collections import Counter
 @app.route('/analyze', methods=['GET', 'POST'])
 def analyze():
     if request.method == 'POST':
-        sequence = request.form['sequence'].upper()
+        sequence = request.form['sequence'].upper().strip()
         organism = request.form['organism']
+        if not sequence or any(base not in "ATCG" for base in sequence):
+            return redirect(url_for('error'))
 
         counts = Counter(sequence)
-
         reference_usage = fetch_codon_usage_kazusa(organism)
         if reference_usage:
             bias = codon_bias(sequence, reference_usage)
@@ -46,8 +47,8 @@ def analyze():
             motifs=[]
         )
 
-
     return render_template('analyze.html')
+
 
 
 
