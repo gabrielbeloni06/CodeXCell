@@ -1,0 +1,75 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body {
+  height: 100%;
+  font-family: Inter, system-ui, sans-serif;
+  background: #0b0f14;
+  color: #e6eef7;
+  overflow: hidden;
+}
+
+.error-container {
+  position: relative;
+  z-index: 2;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.error-content {
+  text-align: center;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 20px;
+  padding: 40px 60px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  animation: fadeInUp 1s ease both;
+}
+.error-content h1 {
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  color: #ff2443;
+  text-shadow: 0 0 20px rgba(255,36,67,0.5);
+  margin-bottom: 20px;
+}
+.error-content p {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+  color: #cfe1ff;
+}
+.btn {
+  display: inline-block;
+  padding: 14px 28px;
+  background: linear-gradient(90deg, #ff2443, #ff6b81);
+  color: #fff;
+  font-weight: 700;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: all .3s ease;
+  box-shadow: 0 0 20px rgba(255,36,67,0.4);
+}
+.btn:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 0 30px rgba(255,36,67,0.7);
+}
+#bgCanvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at center, #0b0f14 0%, #0b0f14 40%, #1a1f2e 100%);
+}
+
+footer {
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+  text-align: center;
+  color: #90a7c4;
+  font-size: 0.9rem;
+  z-index: 2;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
