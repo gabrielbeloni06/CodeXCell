@@ -1,290 +1,272 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <title>CodeXCell - Resultados</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/result.css') }}">
+  <meta charset="UTF-8">
+  <title>CodeXCell - Resultados</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/result.css') }}">
 </head>
 <body>
-    <header>
-        <h1>CodeXCell</h1>
-        <nav>
-            <a href="{{ url_for('home') }}">Home</a> |
-            <a href="{{ url_for('analyze') }}">Analisar</a>
-        </nav>
-    </header>
+  <header>
+    <h1>CodeXCell</h1>
+    <nav>
+      <a href="{{ url_for('home') }}">Home</a> |
+      <a href="{{ url_for('analyze') }}">Analisar</a>
+    </nav>
+  </header>
+  <div class="hamburger" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+  <aside class="sidebar closed">
+    <ul>
+      <li><a href="#sequence">Sequência</a></li>
+      <li><a href="#bases">Bases</a></li>
+      <li><a href="#gc">GC Content</a></li>
+      <li><a href="#chart">Gráfico</a></li>
+      <li><a href="#orfs">ORFs</a></li>
+      <li><a href="#repeats">Repetições</a></li>
+      <li><a href="#comparison">Comparação</a></li>
+      <li><a href="#gc-windows">GC por janela</a></li>
+      <li><a href="#codons">Códons</a></li>
+      <li><a href="#aminoacids">Aminoácidos</a></li>
+      <li><a href="#motifs">Motivos</a></li>
+      <li><a href="#gc-heatmap">Heatmap</a></li>
+      <li><a href="#orf-visual">Visualização ORFs</a></li>
+      <li><a href="#bias">Codon Bias</a></li>
+      <li><a href="#explanation">Explicação</a></li>
+    </ul>
+  </aside>
 
-    <main>
-        <h2>Resultados da Análise</h2>
-
-        <p><strong>Sequência:</strong> {{ sequence }}</p>
-
-        <h3>Contagem de Bases</h3>
-        <ul>
-            <li>A: {{ counts.A }}</li>
-            <li>T: {{ counts.T }}</li>
-            <li>C: {{ counts.C }}</li>
-            <li>G: {{ counts.G }}</li>
-        </ul>
-
-        <p><strong>GC Content:</strong> {{ gc_content }}%</p>
-
-        {% if start_codon %}
-        <p><strong>Start codon encontrado na posição:</strong> {{ start_codon }}</p>
-        {% else %}
-        <p><strong>Nenhum start codon encontrado.</strong></p>
-        {% endif %}
-
-        <div class="chart">
-            <h3>Gráfico de Frequência</h3>
-            <img src="{{ url_for('plot_png', seq=sequence) }}" alt="Gráfico de nucleotídeos">
-        </div>
-
-        <div class="orfs">
-            <h3>ORFs Detectados</h3>
-            {% if orfs and orfs|length > 0 %}
-                <table border="1" cellpadding="5">
-                    <tr>
-                        <th>Frame</th>
-                        <th>Início</th>
-                        <th>Fim</th>
-                        <th>Tamanho (nt)</th>
-                        <th>Proteína</th>
-                    </tr>
-                    {% for orf in orfs %}
-                    <tr>
-                        <td>{{ orf.frame }}</td>
-                        <td>{{ orf.start }}</td>
-                        <td>{{ orf.end }}</td>
-                        <td>{{ orf.length }}</td>
-                        <td>{{ orf.protein }}</td>
-                    </tr>
-                    {% endfor %}
-                </table>
-            {% else %}
-                <p>Nenhum ORF encontrado.</p>
-            {% endif %}
-        </div>
-
-        <div class="repeats">
-            <h3>Motivos Repetitivos Detectados</h3>
-            {% if repeats and repeats|length > 0 %}
-                <table border="1" cellpadding="5">
-                    <tr>
-                        <th>Motivo</th>
-                        <th>Início</th>
-                        <th>Fim</th>
-                        <th>Número de repetições</th>
-                    </tr>
-                    {% for rep in repeats %}
-                    <tr>
-                        <td>{{ rep.motif }}</td>
-                        <td>{{ rep.start }}</td>
-                        <td>{{ rep.end }}</td>
-                        <td>{{ rep.repeats }}</td>
-                    </tr>
-                    {% endfor %}
-                </table>
-            {% else %}
-                <p>Nenhum motivo repetitivo encontrado.</p>
-            {% endif %}
-        </div>
-
-        <div class="comparison">
-            <h3>Comparação de Sequências</h3>
-            {% if comparison %}
-                <pre>
-        Seq1: {{ comparison.seq1 }}
-            {{ comparison.alignment }}
-        Seq2: {{ comparison.seq2 }}
-                </pre>
-                <p><strong>Identidade:</strong> {{ comparison.identity }}%</p>
-            {% else %}
-                <p>Nenhuma segunda sequência fornecida.</p>
-            {% endif %}
-        </div>
-
-        <div class="gc-windows">
-            <h3>GC Content por janela</h3>
-            {% if gc_windows and gc_windows|length > 0 %}
-                <table border="1" cellpadding="5">
-                    <tr>
-                        <th>Início</th>
-                        <th>Fim</th>
-                        <th>GC (%)</th>
-                    </tr>
-                    {% for w in gc_windows %}
-                    <tr>
-                        <td>{{ w.start }}</td>
-                        <td>{{ w.end }}</td>
-                        <td>{{ w.gc }}</td>
-                    </tr>
-                    {% endfor %}
-                </table>
-            {% else %}
-                <p>Sequência muito curta para análise em janelas.</p>
-            {% endif %}
-        </div>
-        <div class="codons">
-            <h3>Frequência de Códons (Top 10)</h3>
-            {% if codons and codons|length > 0 %}
-                <table border="1" cellpadding="5">
-                    <tr>
-                        <th>Códon</th>
-                        <th>Contagem</th>
-                    </tr>
-                    {% for codon, count in codons %}
-                    <tr>
-                        <td>{{ codon }}</td>
-                        <td>{{ count }}</td>
-                    </tr>
-                    {% endfor %}
-                </table>
-            {% else %}
-                <p>Nenhum códon encontrado.</p>
-            {% endif %}
-        </div>
-
-        <div class="aminoacids">
-            <h3>Análise de Aminoácidos</h3>
+  <main>
+    <h2>Resultados da Análise</h2>
+    <section id="sequence" class="card">
+      <h3>Sequência</h3>
+      <p>{{ sequence }}</p>
+    </section>
+    <section id="bases" class="card">
+      <h3>Contagem de Bases</h3>
+      <ul>
+        <li>A: {{ counts.A }}</li>
+        <li>T: {{ counts.T }}</li>
+        <li>C: {{ counts.C }}</li>
+        <li>G: {{ counts.G }}</li>
+      </ul>
+    </section>
+    <section id="gc" class="card">
+      <h3>GC Content</h3>
+      <p>{{ gc_content }}%</p>
+    </section>
+    <section id="chart" class="card full-width">
+      <h3>Gráfico de Frequência</h3>
+      <img src="{{ url_for('plot_png', seq=sequence) }}" alt="Gráfico de nucleotídeos">
+    </section>
+    <section id="orfs" class="card">
+      <h3>ORFs Detectados</h3>
+      {% if orfs and orfs|length > 0 %}
+        <table>
+          <thead><tr><th>Frame</th><th>Início</th><th>Fim</th><th>Tamanho</th><th>Proteína</th></tr></thead>
+          <tbody>
             {% for orf in orfs %}
-                <p><strong>Proteína do ORF (frame {{ orf.frame }}):</strong> {{ orf.protein }}</p>
-                <p>Tamanho: {{ orf.analysis.length }} aa | Peso molecular: {{ orf.analysis.weight }} Da</p>
-                <p>Frequência relativa:</p>
-                <ul>
-                    {% for aa, perc in orf.analysis.freq.items() %}
-                        <li>{{ aa }}: {{ perc }}%</li>
-                    {% endfor %}
-                </ul>
-            {% endfor %}
-        </div>
-        <div class="motifs">
-            <h3>Motivos Biológicos Detectados</h3>
-            {% if motifs and motifs|length > 0 %}
-                <table border="1" cellpadding="5">
-                    <tr>
-                        <th>Motivo</th>
-                        <th>Sequência</th>
-                        <th>Início</th>
-                        <th>Fim</th>
-                    </tr>
-                    {% for m in motifs %}
-                    <tr>
-                        <td>{{ m.motif }}</td>
-                        <td>{{ m.sequence }}</td>
-                        <td>{{ m.start }}</td>
-                        <td>{{ m.end }}</td>
-                    </tr>
-                    {% endfor %}
-                </table>
-            {% else %}
-                <p>Nenhum motivo clássico encontrado.</p>
-            {% endif %}
-        </div>
-
-        <div class="gc-heatmap">
-            <h3>Heatmap de GC Content</h3>
-            {% if gc_windows and gc_windows|length > 0 %}
-                <div style="display:flex;">
-                    {% for w in gc_windows %}
-                        {% set color = 'rgb(' ~ (255 - (w.gc*2.55)|int) ~ ',' ~ (255 - (w.gc*1.5)|int) ~ ',' ~ (w.gc*2.55)|int ~ ')' %}
-                        <div title="Pos {{ w.start }}-{{ w.end }}: {{ w.gc }}%" 
-                            style="width:20px; height:20px;">
-                        </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <p>Sequência muito curta para heatmap.</p>
-            {% endif %}
-        </div>
-
-        <div class="orf-visual">
-        <h3>Visualização gráfica dos ORFs (Canvas)</h3>
-        <canvas id="orfCanvas" width="800" height="80" style="border:1px solid #ccc;"></canvas>
-        <p style="font-size: 0.9em; color: #555;">
-            Cada cor representa um frame diferente (1 = verde, 2 = azul, 3 = laranja).
-        </p>
-        </div>
-        <div id="orfData"
-            data-orfs='{{ orfs|default([])|tojson|safe }}'
-            data-length='{{ sequence|length }}'></div>
-                    data-orfs='{{ orfs|tojson|safe }}'
-                    data-length='{{ sequence|length }}'></div>
-        <script src="{{ url_for('static', filename='js/orf.js') }}"></script>
-        
-        
-        <div class="codon-bias">
-        <h3>Codon Bias (comparação com {{ organism }})</h3>
-        {% if bias and bias|length > 0 %}
-            <table border="1" cellpadding="5">
             <tr>
-                <th>Códon</th>
-                <th>Freq. na sequência</th>
-                <th>Freq. em {{ organism }}</th>
-                <th>Razão (seq/ref)</th>
+              <td>{{ orf.frame }}</td><td>{{ orf.start }}</td><td>{{ orf.end }}</td>
+              <td>{{ orf.length }}</td><td>{{ orf.protein }}</td>
             </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p>Nenhum ORF encontrado.</p>
+      {% endif %}
+    </section>
+
+    <section id="repeats" class="card">
+      <h3>Motivos Repetitivos</h3>
+      {% if repeats and repeats|length > 0 %}
+        <table>
+          <thead><tr><th>Motivo</th><th>Início</th><th>Fim</th><th>Repetições</th></tr></thead>
+          <tbody>
+            {% for rep in repeats %}
+            <tr><td>{{ rep.motif }}</td><td>{{ rep.start }}</td><td>{{ rep.end }}</td><td>{{ rep.repeats }}</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p>Nenhum motivo repetitivo encontrado.</p>
+      {% endif %}
+    </section>
+
+    <section id="comparison" class="card">
+      <h3>Comparação de Sequências</h3>
+      {% if comparison %}
+        <pre>
+Seq1: {{ comparison.seq1 }}
+{{ comparison.alignment }}
+Seq2: {{ comparison.seq2 }}
+        </pre>
+        <p><strong>Identidade:</strong> {{ comparison.identity }}%</p>
+      {% else %}
+        <p>Nenhuma segunda sequência fornecida.</p>
+      {% endif %}
+    </section>
+
+    <section id="gc-windows" class="card">
+      <h3>GC Content por janela</h3>
+      {% if gc_windows and gc_windows|length > 0 %}
+        <table>
+          <thead><tr><th>Início</th><th>Fim</th><th>GC (%)</th></tr></thead>
+          <tbody>
+            {% for w in gc_windows %}
+            <tr><td>{{ w.start }}</td><td>{{ w.end }}</td><td>{{ w.gc }}</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p>Sequência muito curta para análise em janelas.</p>
+      {% endif %}
+    </section>
+
+    <section id="codons" class="card">
+      <h3>Frequência de Códons (Top 10)</h3>
+      {% if codons and codons|length > 0 %}
+        <table>
+          <thead><tr><th>Códon</th><th>Contagem</th></tr></thead>
+          <tbody>
+            {% for codon, count in codons %}
+            <tr><td>{{ codon }}</td><td>{{ count }}</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p>Nenhum códon encontrado.</p>
+      {% endif %}
+    </section>
+
+    <section id="aminoacids" class="card">
+      <h3>Análise de Aminoácidos</h3>
+      {% if orfs and orfs|length > 0 %}
+        {% for orf in orfs %}
+          <p><strong>Proteína (frame {{ orf.frame }}):</strong> {{ orf.protein }}</p>
+          <p>Tamanho: {{ orf.analysis.length }} aa | Peso: {{ orf.analysis.weight }} Da</p>
+          <ul>
+            {% for aa, perc in orf.analysis.freq.items() %}
+            <li>{{ aa }}: {{ perc }}%</li>
+            {% endfor %}
+          </ul>
+        {% endfor %}
+      {% else %}
+        <p>Nenhum aminoácido analisado.</p>
+      {% endif %}
+    </section>
+
+    <section id="motifs" class="card">
+      <h3>Motivos Biológicos</h3>
+      {% if motifs and motifs|length > 0 %}
+        <table>
+          <thead><tr><th>Motivo</th><th>Sequência</th><th>Início</th><th>Fim</th></tr></thead>
+          <tbody>
+            {% for m in motifs %}
+            <tr><td>{{ m.motif }}</td><td>{{ m.sequence }}</td><td>{{ m.start }}</td><td>{{ m.end }}</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p>Nenhum motivo clássico encontrado.</p>
+      {% endif %}
+    </section>
+    <section id="gc-heatmap" class="card full-width">
+      <h3>Heatmap de GC Content</h3>
+      {% if gc_windows and gc_windows|length > 0 %}
+        <div class="map">
+          {% for w in gc_windows %}
+            {% set color = 'rgb(' ~ (255 - (w.gc*2.55)|int) ~ ',' ~ (255 - (w.gc*1.5)|int) ~ ',' ~ (w.gc*2.55)|int ~ ')' %}
+            <div class="cell" title="Pos {{ w.start }}-{{ w.end }}: {{ w.gc }}%" data-color="{{ color }}"></div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p>Sequência muito curta para heatmap.</p>
+      {% endif %}
+    </section>
+    <section id="orf-visual" class="card full-width">
+      <h3>Visualização gráfica dos ORFs (Canvas)</h3>
+      <div class="canvas-wrap">
+        <canvas id="orfCanvas" width="800" height="120"></canvas>
+      </div>
+      <p style="font-size: 0.9em; color: #aebbd1;">
+        Cada cor representa um frame diferente (1 = verde, 2 = azul, 3 = laranja).
+      </p>
+      <div id="orfData"
+           data-orfs='{{ orfs|default([])|tojson|safe }}'
+           data-length='{{ sequence|length }}'></div>
+    </section>
+    <section id="bias" class="card">
+      <h3>Codon Bias (comparação com {{ organism }})</h3>
+      {% if bias and bias|length > 0 %}
+        <table>
+          <thead>
+            <tr>
+              <th>Códon</th>
+              <th>Freq. na sequência</th>
+              <th>Freq. em {{ organism }}</th>
+              <th>Razão (seq/ref)</th>
+            </tr>
+          </thead>
+          <tbody>
             {% for b in bias %}
             <tr>
-                <td>{{ b.codon }}</td>
-                <td>{{ b.freq_seq }}</td>
-                <td>{{ b.freq_ref }}</td>
-                <td>{{ b.ratio }}</td>
+              <td>{{ b.codon }}</td>
+              <td>{{ b.freq_seq }}</td>
+              <td>{{ b.freq_ref }}</td>
+              <td>{{ b.ratio }}</td>
             </tr>
             {% endfor %}
-            </table>
-        {% else %}
-            <p>Não foi possível calcular o Codon Bias (API indisponível).</p>
-        {% endif %}
-        </div>
+          </tbody>
+        </table>
+      {% else %}
+        <p>Não foi possível calcular o Codon Bias.</p>
+      {% endif %}
+    </section>
+    <section id="analysis-result" class="card">
+      <h3>Resumo da Análise</h3>
+      <p><strong>Sequência analisada:</strong> {{ sequence }}</p>
+      <ul>
+        <li>A: {{ counts['A'] }}</li>
+        <li>T: {{ counts['T'] }}</li>
+        <li>C: {{ counts['C'] }}</li>
+        <li>G: {{ counts['G'] }}</li>
+      </ul>
+      {% if bias and bias|length > 0 %}
+      <h4>Codon Bias ({{ organism }})</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>Códon</th>
+            <th>Freq. na sequência</th>
+            <th>Freq. em {{ organism }}</th>
+            <th>Razão (seq/ref)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for b in bias %}
+          <tr>
+            <td>{{ b.codon }}</td>
+            <td>{{ b.freq_seq }}</td>
+            <td>{{ b.freq_ref }}</td>
+            <td>{{ b.ratio }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% endif %}
+    </section>
+    <section id="explanation" class="card full-width">
+      <h3>Explicação</h3>
+      <p>[Texto gerado pelo LLM será exibido aqui]</p>
+    </section>
+  </main>
 
-        <div class="analysis-result">
-        <h2>Resultado da Análise</h2>
+  <script src="{{ url_for('static', filename='js/result.js') }}"></script>
 
-        <h3>Sequência analisada</h3>
-        <p>{{ sequence }}</p>
-
-        <h3>Contagem de nucleotídeos</h3>
-        <ul>
-            <li>A: {{ counts['A'] }}</li>
-            <li>T: {{ counts['T'] }}</li>
-            <li>C: {{ counts['C'] }}</li>
-            <li>G: {{ counts['G'] }}</li>
-        </ul>
-
-        <h3>Codon Bias (comparação com {{ organism }})</h3>
-        {% if bias and bias|length > 0 %}
-            <table border="1" cellpadding="5">
-            <tr>
-                <th>Códon</th>
-                <th>Freq. na sequência</th>
-                <th>Freq. em {{ organism }}</th>
-                <th>Razão (seq/ref)</th>
-            </tr>
-            {% for b in bias %}
-            <tr>
-                <td>{{ b.codon }}</td>
-                <td>{{ b.freq_seq }}</td>
-                <td>{{ b.freq_ref }}</td>
-                <td>{{ b.ratio }}</td>
-            </tr>
-            {% endfor %}
-            </table>
-        {% else %}
-            <p>Não foi possível calcular o Codon Bias.</p>
-        {% endif %}
-        </div>
-
-
-
-
-        <div class="explanation">
-            <h3>Explicação</h3>
-            <p>[Texto gerado pelo LLM será exibido aqui]</p>
-        </div>
-    </main>
-
-    <footer>
-        <p>Projeto CodeXCell © 2025</p>
-    </footer>
+  <footer>
+    <p>Projeto CodeXCell © 2025</p>
+  </footer>
 </body>
 </html>
